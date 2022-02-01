@@ -1,25 +1,27 @@
 import { useState } from "react/cjs/react.development";
 import { CREATE_USER_MUTATION } from "../GraphQL/Mutations";
-import { useMutation } from "@apollo/client";
+import { LOAD_USERS } from "../GraphQL/Queries";
+import { useMutation, useQuery } from "@apollo/client";
 
 const Form = () => {
-    const [data, setData] = useState({
+    // const { refetch } = useQuery(LOAD_USERS);
+
+    const [newData, setNewData] = useState({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
     });
 
-    const [createUser, { error }] = useMutation(CREATE_USER_MUTATION);
+    const [createUser, { error, loading }] = useMutation(CREATE_USER_MUTATION, {
+        refetchQueries: [LOAD_USERS, "getAllUsers"],
+    });
 
     const addUser = () => {
         createUser({
-            variables: data,
+            variables: newData,
         });
-
-        // if (error) {
-        //     console.log(error);
-        // }
+        // refetch();
     };
     return (
         <div>
@@ -27,8 +29,8 @@ const Form = () => {
                 type="text"
                 placeholder="First Name"
                 onChange={(e) =>
-                    setData({
-                        ...data,
+                    setNewData({
+                        ...newData,
                         firstName: e.target.value,
                     })
                 }
@@ -37,8 +39,8 @@ const Form = () => {
                 type="text"
                 placeholder="Last Name"
                 onChange={(e) =>
-                    setData({
-                        ...data,
+                    setNewData({
+                        ...newData,
                         lastName: e.target.value,
                     })
                 }
@@ -47,8 +49,8 @@ const Form = () => {
                 type="text"
                 placeholder="Email"
                 onChange={(e) =>
-                    setData({
-                        ...data,
+                    setNewData({
+                        ...newData,
                         email: e.target.value,
                     })
                 }
@@ -57,8 +59,8 @@ const Form = () => {
                 type="text"
                 placeholder="Password"
                 onChange={(e) =>
-                    setData({
-                        ...data,
+                    setNewData({
+                        ...newData,
                         password: e.target.value,
                     })
                 }

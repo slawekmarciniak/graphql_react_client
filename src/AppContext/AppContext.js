@@ -3,12 +3,13 @@ import { createContext, useState } from "react";
 export const AppContext = createContext(null);
 
 const AppProvider = ({ children }) => {
-    const [isLogged, setIsLogged] = useState(false);
+    const [users, setUsers] = useState(null);
 
     return (
         <AppContext.Provider
             value={{
-                isLogged,
+                users,
+                setUsers,
             }}
         >
             {children}
