@@ -1,12 +1,10 @@
 import { useState } from "react/cjs/react.development";
 import { CREATE_USER_MUTATION } from "../GraphQL/Mutations";
 import { LOAD_USERS } from "../GraphQL/Queries";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 const Form = () => {
-    // const { refetch } = useQuery(LOAD_USERS);
-
-    const [newData, setNewData] = useState({
+    const [user, setUser] = useState({
         firstName: "",
         lastName: "",
         email: "",
@@ -14,59 +12,68 @@ const Form = () => {
     });
 
     const [createUser, { error, loading }] = useMutation(CREATE_USER_MUTATION, {
-        refetchQueries: [LOAD_USERS, "getAllUsers"],
+        refetchQueries: [LOAD_USERS],
     });
 
     const addUser = () => {
         createUser({
-            variables: newData,
+            variables: user,
         });
-        // refetch();
+        setUser({ firstName: "", lastName: "", email: "", password: "" });
     };
     return (
-        <div>
-            <input
-                type="text"
-                placeholder="First Name"
-                onChange={(e) =>
-                    setNewData({
-                        ...newData,
-                        firstName: e.target.value,
-                    })
-                }
-            />
-            <input
-                type="text"
-                placeholder="Last Name"
-                onChange={(e) =>
-                    setNewData({
-                        ...newData,
-                        lastName: e.target.value,
-                    })
-                }
-            />
-            <input
-                type="text"
-                placeholder="Email"
-                onChange={(e) =>
-                    setNewData({
-                        ...newData,
-                        email: e.target.value,
-                    })
-                }
-            />
-            <input
-                type="text"
-                placeholder="Password"
-                onChange={(e) =>
-                    setNewData({
-                        ...newData,
-                        password: e.target.value,
-                    })
-                }
-            />
-            <button onClick={addUser}>Create User</button>
-        </div>
+        <>
+            <div>
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    value={user.firstName}
+                    onChange={(e) =>
+                        setUser({
+                            ...user,
+                            firstName: e.target.value,
+                        })
+                    }
+                />
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={user.lastName}
+                    onChange={(e) =>
+                        setUser({
+                            ...user,
+                            lastName: e.target.value,
+                        })
+                    }
+                />
+                <input
+                    type="text"
+                    value={user.email}
+                    placeholder="Email"
+                    onChange={(e) =>
+                        setUser({
+                            ...user,
+                            email: e.target.value,
+                        })
+                    }
+                />
+                <input
+                    type="text"
+                    placeholder="Password"
+                    value={user.password}
+                    onChange={(e) =>
+                        setUser({
+                            ...user,
+                            password: e.target.value,
+                        })
+                    }
+                />
+                <button onClick={addUser}>Create User</button>
+            </div>
+
+            {error && <p>error during submit</p>}
+            {loading && <p>submiting...</p>}
+        </>
     );
 };
 
